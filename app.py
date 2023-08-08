@@ -2,11 +2,21 @@ import streamlit as st
 import qrcode
 from PIL import Image
 import io
+import pyshorteners
 
 st.title('QR Code Generator')
 
+# Option to use shortlink
+shorten_url = st.sidebar.checkbox('Use shortlink (TinyURL)?')
+
 # Input for the user to enter the URL
 url = st.text_input('Enter the URL you want to convert to QR Code:')
+
+if url and shorten_url:
+    # Shorten the URL using TinyURL
+    s = pyshorteners.Shortener()
+    url = s.tinyurl.short(url)
+    st.write('Shortened URL:', url)
 
 if url:
     # Create a QR Code instance
