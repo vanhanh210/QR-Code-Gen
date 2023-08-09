@@ -1,6 +1,6 @@
 import streamlit as st
 import qrcode
-from qrcode.image.pilimage import PilImage
+from qrcode.image.pil import PilImage
 from PIL import Image, ImageDraw
 import io
 import base64
