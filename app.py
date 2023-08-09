@@ -67,8 +67,18 @@ if url:
     # Display the image
     st.image(buffer, caption='Generated QR Code', use_column_width=True)
 
-    # Download Button
+    # Decorated Download Button
     buffer.seek(0)
     b64 = base64.b64encode(buffer.read()).decode()
-    download_button = f'<a href="data:image/{format_extension};base64,{b64}" download="qr_code.{format_extension}">Download QR Code</a>'
+    download_button = f'<a href="data:image/{format_extension};base64,{b64}" download="qr_code.{format_extension}" style="display: inline-block; padding: .5rem 1rem; border: 1px solid #ccc; border-radius: .25rem; background-color: #f8f9fa; text-decoration: none; color: #495057;">Download QR Code</a>'
     st.markdown(download_button, unsafe_allow_html=True)
+
+# Donate Button in Footer
+st.markdown(
+    """
+    <div style="position: fixed; bottom: 10px; right: 10px; padding: 10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 10px;">
+        <span>Buy Vanh coffee: VpBank 200166302</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
