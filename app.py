@@ -1,11 +1,11 @@
 import streamlit as st
 import qrcode
-from PIL import Image
+from qrcode.image.pilimage import PilImage
+from PIL import Image, ImageDraw
 import io
-import pyshorteners
 import base64
 
-st.title('QR Code Generator with Logo')
+st.title('QR Code Generator with Custom Style')
 
 # Option to use shortlink
 shorten_url = st.sidebar.checkbox('Use shortlink (TinyURL)?')
@@ -13,20 +13,14 @@ shorten_url = st.sidebar.checkbox('Use shortlink (TinyURL)?')
 # Input for the user to enter the URL
 url = st.text_input('Enter the URL you want to convert to QR Code:')
 
-# Option to upload a logo
-uploaded_logo = st.file_uploader('Upload a logo (optional):')
-
-# Options to select quality, format, and version
+# Options to select quality, format, version, shape, and colors
 quality = st.sidebar.slider('Select Quality (DPI):', min_value=72, max_value=300, value=150, step=1)
 format_options = st.sidebar.selectbox('Select Image Format:', options=['PNG', 'JPEG', 'BMP'])
 format_extension = format_options.lower()
 version_options = st.sidebar.slider('Select QR Code Version (1-40):', min_value=1, max_value=40, value=6, step=1)
-
-if url and shorten_url:
-    # Shorten the URL using TinyURL
-    s = pyshorteners.Shortener()
-    url = s.tinyurl.short(url)
-    st.write('Shortened URL:', url)
+shape_options = st.sidebar.selectbox('Select Shape:', options=['Square', 'Circle'])
+fill_color_options = st.sidebar.color_picker('Select Fill Color:', value='#000000')
+back_color_options = st.sidebar.color_picker('Select Background Color:', value='#FFFFFF')
 
 if url:
     # Create a QR Code instance with selected version
@@ -36,28 +30,22 @@ if url:
         box_size=10,
         border=4,
     )
+    
     # Add the URL
     qr.add_data(url)
     qr.make(fit=True)
 
     # Create an Image object from the QR Code instance
-    img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+    img = qr.make_image(fill_color=fill_color_options, back_color=back_color_options, image_factory=PilImage).convert('RGB')
 
-    # If a logo is uploaded, embed it in the center of the QR code
-    if uploaded_logo:
-        logo = Image.open(uploaded_logo).convert('RGBA')
-        logo_size = 80
-        logo = logo.resize((logo_size, logo_size), Image.ANTIALIAS)
-        qr_size = img.size[0]
-        logo_position = ((qr_size - logo_size) // 2, (qr_size - logo_size) // 2)
-
-        # Create a white box in the center of QR code where the logo will be placed
-        for x in range(logo_position[0], logo_position[0] + logo_size):
-            for y in range(logo_position[1], logo_position[1] + logo_size):
-                img.putpixel((x, y), (255, 255, 255))
-
-        # Paste the logo
-        img.paste(logo, logo_position, mask=logo)
+    # If shape is Circle, modify the QR code modules to be circular
+    if shape_options == 'Circle':
+        img_pixels = img.load()
+        for r in range(img.size[0]):
+            for c in range(img.size[1]):
+                if img_pixels[r, c] == (0, 0, 0):  # If the pixel is part of a QR code module
+                    draw = ImageDraw.Draw(img)
+                    draw.ellipse([r, c, r + 10, c + 10], fill=fill_color_options)
 
     # Save the image to a BytesIO object
     buffer = io.BytesIO()
