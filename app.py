@@ -22,6 +22,10 @@ format_options = st.sidebar.selectbox('Select Image Format:', options=['PNG', 'J
 format_extension = format_options.lower()
 version_options = st.sidebar.slider('Select QR Code Version (1-40):', min_value=1, max_value=40, value=6, step=1)
 
+# Options to select fill color and background color
+fill_color = st.sidebar.color_picker('Select QR Code Fill Color:', '#000000')
+back_color = st.sidebar.color_picker('Select QR Code Background Color:', '#ffffff')
+
 if url and shorten_url:
     # Shorten the URL using TinyURL
     s = pyshorteners.Shortener()
@@ -37,13 +41,12 @@ if url:
         border=4,
     )
 
-
     # Add the URL
     qr.add_data(url)
     qr.make(fit=True)
 
     # Create an Image object from the QR Code instance
-    img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+    img = qr.make_image(fill_color=fill_color, back_color=back_color).convert('RGB')
 
     # If a logo is uploaded, embed it in the center of the QR code
     if uploaded_logo:
