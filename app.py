@@ -24,8 +24,8 @@ if url and shorten_url:
 if url:
     # Create a QR Code instance
     qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        version=6,
+        error_correction=qrcode.constants.ERROR_CORRECT_Q,
         box_size=10,
         border=4,
     )
@@ -35,16 +35,23 @@ if url:
     qr.make(fit=True)
 
     # Create an Image object from the QR Code instance
-    img = qr.make_image(fill_color="black", back_color="white")
+    img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
 
     # If a logo is uploaded, embed it in the center of the QR code
     if uploaded_logo:
-        logo = Image.open(uploaded_logo)
+        logo = Image.open(uploaded_logo).convert('RGBA')
         logo_size = 40  # Adjust the size of the logo
-        logo = logo.resize((logo_size, logo_size))
+        logo = logo.resize((logo_size, logo_size), Image.ANTIALIAS)
         qr_size = img.size[0]
         logo_position = ((qr_size - logo_size) // 2, (qr_size - logo_size) // 2)
-        img.paste(logo, logo_position)
+        
+        # Create a white box in the center of QR code where the logo will be placed
+        for x in range(logo_position[0], logo_position[0] + logo_size):
+            for y in range(logo_position[1], logo_position[1] + logo_size):
+                img.putpixel((x, y), (255, 255, 255))
+
+        # Paste the logo
+        img.paste(logo, logo_position, mask=logo)
 
     # Save the image to a BytesIO object
     buffer = io.BytesIO()
