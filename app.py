@@ -1,3 +1,4 @@
+import streamlit as st
 import qrcode
 from PIL import Image
 import io
@@ -15,11 +16,10 @@ url = st.text_input('Enter the URL you want to convert to QR Code:')
 # Option to upload a logo
 uploaded_logo = st.file_uploader('Upload a logo (optional):')
 
-# Options to select quality, format, and version
+# Options to select quality and format
 quality = st.sidebar.slider('Select Quality (DPI):', min_value=72, max_value=300, value=150, step=1)
 format_options = st.sidebar.selectbox('Select Image Format:', options=['PNG', 'JPEG', 'BMP'])
 format_extension = format_options.lower()
-version_options = st.sidebar.slider('Select QR Code Version (1-40):', min_value=1, max_value=40, value=6, step=1)
 
 if url and shorten_url:
     # Shorten the URL using TinyURL
@@ -28,13 +28,14 @@ if url and shorten_url:
     st.write('Shortened URL:', url)
 
 if url:
-    # Create a QR Code instance with selected version
+    # Create a QR Code instance
     qr = qrcode.QRCode(
-        version=version_options,
+        version=6,
         error_correction=qrcode.constants.ERROR_CORRECT_Q,
         box_size=10,
         border=4,
     )
+
     # Add the URL
     qr.add_data(url)
     qr.make(fit=True)
