@@ -5,3 +5,4 @@ pyshorteners
 base64
 Image
 PilImage
+ImageDraw
