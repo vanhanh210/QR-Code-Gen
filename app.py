@@ -1,23 +1,8 @@
-import streamlit as st
 import qrcode
-from PIL import Image, ImageDraw
+from PIL import Image
 import io
 import pyshorteners
 import base64
-
-def draw_module(draw, shape, x, y, size, fill_color):
-    if shape == 'Rounded':
-        draw.rectangle([x, y, x + size, y + size], outline=fill_color, width=1)
-        draw.ellipse([x, y, x + size, y + size], fill=fill_color)
-    elif shape == 'Dot':
-        draw.ellipse([x, y, x + size, y + size], fill=fill_color)
-    elif shape == 'Small-Rounded':
-        draw.rectangle([x, y, x + size, y + size], fill=fill_color)
-        draw.ellipse([x + 2, y + 2, x + size - 2, y + size - 2], fill='white')
-    elif shape == 'Large-Circles-Dash':
-        draw.ellipse([x + 2, y + 2, x + size - 2, y + size - 2], outline=fill_color, width=2)
-    else:  # Square
-        draw.rectangle([x, y, x + size, y + size], fill=fill_color)
 
 st.title('QR Code Generator with Logo')
 
@@ -42,9 +27,6 @@ if url and shorten_url:
     url = s.tinyurl.short(url)
     st.write('Shortened URL:', url)
 
-shape_options = st.sidebar.selectbox('Select Shape:', options=['Square', 'Rounded', 'Dot', 'Small-Rounded', 'Large-Circles-Dash'])
-fill_color_options = st.sidebar.color_picker('Select Fill Color:', value='#000000')
-
 if url:
     # Create a QR Code instance with selected version
     qr = qrcode.QRCode(
@@ -60,14 +42,6 @@ if url:
     # Create an Image object from the QR Code instance
     img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
 
-
-    # Customize the shape of the modules
-    draw = ImageDraw.Draw(img)
-    for r in range(qr.modules_count):
-        for c in range(qr.modules_count):
-            if qr.modules[r][c]:
-                draw_module(draw, shape_options, r * 10, c * 10, 10, fill_color_options)
-                
     # If a logo is uploaded, embed it in the center of the QR code
     if uploaded_logo:
         logo = Image.open(uploaded_logo).convert('RGBA')
