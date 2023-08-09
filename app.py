@@ -5,29 +5,6 @@ import io
 import pyshorteners
 import base64
 
-def apply_style(img, style, fill_color, qr):
-    draw = ImageDraw.Draw(img)
-    qr_size = img.size[0]
-    box_size = qr_size // (len(qr.get_matrix()) + 8)
-    for y, row in enumerate(qr.get_matrix()):
-        for x, col in enumerate(row):
-            if col:
-                x_pos, y_pos = (x + 4) * box_size, (y + 4) * box_size
-                if style == 'Rounded':
-                    draw.ellipse([x_pos, y_pos, x_pos + box_size, y_pos + box_size], fill=fill_color)
-                elif style == 'Dot':
-                    draw.ellipse([x_pos + box_size // 4, y_pos + box_size // 4,
-                                  x_pos + 3 * box_size // 4, y_pos + 3 * box_size // 4], fill=fill_color)
-                elif style == 'Square':
-                    draw.rectangle([x_pos, y_pos, x_pos + box_size, y_pos + box_size], fill=fill_color)
-                elif style == 'Small-Rounded':
-                    draw.ellipse([x_pos + box_size // 4, y_pos + box_size // 4,
-                                  x_pos + 3 * box_size // 4, y_pos + 3 * box_size // 4], fill=fill_color)
-                elif style == 'Large-Circles-Dash':
-                    if (x + y) % 2 == 0:
-                        draw.ellipse([x_pos, y_pos, x_pos + box_size, y_pos + box_size], fill=fill_color)
-    return img
-
 st.title('QR Code Generator with Logo')
 
 # Option to use shortlink
@@ -55,9 +32,6 @@ if url and shorten_url:
     url = s.tinyurl.short(url)
     st.write('Shortened URL:', url)
 
-# Options to select fill style
-fill_style = st.sidebar.selectbox('Select QR Code Fill Style:', options=['Rounded', 'Dot', 'Square', 'Small-Rounded', 'Large-Circles-Dash'])
-
 if url:
     # Create a QR Code instance with selected version
     qr = qrcode.QRCode(
@@ -73,9 +47,6 @@ if url:
 
     # Create an Image object from the QR Code instance
     img = qr.make_image(fill_color=fill_color, back_color=back_color).convert('RGB')
-
-    # Apply the selected fill style
-    img = apply_style(img, fill_style, fill_color, qr)
 
     # If a logo is uploaded, embed it in the center of the QR code
     if uploaded_logo:
@@ -116,3 +87,4 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
