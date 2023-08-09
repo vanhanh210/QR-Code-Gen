@@ -30,7 +30,7 @@ if url and shorten_url:
 if url:
     # Create a QR Code instance
     qr = qrcode.QRCode(
-        version=6,
+        version=40,
         error_correction=qrcode.constants.ERROR_CORRECT_Q,
         box_size=10,
         border=4,
