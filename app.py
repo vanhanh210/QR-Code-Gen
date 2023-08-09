@@ -5,7 +5,7 @@ import io
 import pyshorteners
 import base64
 
-def apply_style(img, style, fill_color):
+def apply_style(img, style, fill_color, qr):
     draw = ImageDraw.Draw(img)
     qr_size = img.size[0]
     box_size = qr_size // (len(qr.get_matrix()) + 8)
@@ -75,8 +75,8 @@ if url:
     img = qr.make_image(fill_color=fill_color, back_color=back_color).convert('RGB')
 
     # Apply the selected fill style
-    img = apply_style(img, fill_style, fill_color)
-    
+    img = apply_style(img, fill_style, fill_color, qr)
+
     # If a logo is uploaded, embed it in the center of the QR code
     if uploaded_logo:
         logo = Image.open(uploaded_logo).convert('RGBA')
