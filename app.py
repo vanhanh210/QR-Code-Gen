@@ -24,7 +24,7 @@ if url and shorten_url:
 if url:
     # Create a QR Code instance
     qr = qrcode.QRCode(
-        version=6,
+        version=6, # You might need to increase this if the logo interferes with the code
         error_correction=qrcode.constants.ERROR_CORRECT_Q,
         box_size=10,
         border=4,
@@ -40,7 +40,7 @@ if url:
     # If a logo is uploaded, embed it in the center of the QR code
     if uploaded_logo:
         logo = Image.open(uploaded_logo).convert('RGBA')
-        logo_size = 40  # Adjust the size of the logo
+        logo_size = 80  # Increased size of the logo
         logo = logo.resize((logo_size, logo_size), Image.ANTIALIAS)
         qr_size = img.size[0]
         logo_position = ((qr_size - logo_size) // 2, (qr_size - logo_size) // 2)
