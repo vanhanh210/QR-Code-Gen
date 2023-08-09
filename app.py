@@ -4,13 +4,16 @@ from PIL import Image
 import io
 import pyshorteners
 
-st.title('QR Code Generator')
+st.title('QR Code Generator with Logo')
 
 # Option to use shortlink
 shorten_url = st.sidebar.checkbox('Use shortlink (TinyURL)?')
 
 # Input for the user to enter the URL
 url = st.text_input('Enter the URL you want to convert to QR Code:')
+
+# Option to upload a logo
+uploaded_logo = st.file_uploader('Upload a logo (optional):')
 
 if url and shorten_url:
     # Shorten the URL using TinyURL
@@ -33,6 +36,15 @@ if url:
 
     # Create an Image object from the QR Code instance
     img = qr.make_image(fill_color="black", back_color="white")
+
+    # If a logo is uploaded, embed it in the center of the QR code
+    if uploaded_logo:
+        logo = Image.open(uploaded_logo)
+        logo_size = 40  # Adjust the size of the logo
+        logo = logo.resize((logo_size, logo_size))
+        qr_size = img.size[0]
+        logo_position = ((qr_size - logo_size) // 2, (qr_size - logo_size) // 2)
+        img.paste(logo, logo_position)
 
     # Save the image to a BytesIO object
     buffer = io.BytesIO()
