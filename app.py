@@ -24,7 +24,7 @@ if url:
 
     # Create a QR Code instance
     qr = qrcode.QRCode(
-        version=1,
+        version=6,  # Choose an appropriate version to fit the logo
         error_correction=qrcode.constants.ERROR_CORRECT_H,
         box_size=10,
         border=4,
@@ -36,14 +36,18 @@ if url:
 
     # Create an Image object from the QR Code instance
     img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+    img_w, img_h = img.size
 
-    # Add the logo if uploaded
+    # Create a blank space for the logo if uploaded
     if logo_file:
+        logo_size = 50  # Adjust as needed
+        offset = ((img_w - logo_size) // 2, (img_h - logo_size) // 2)
+        for y in range(offset[1], offset[1] + logo_size):
+            for x in range(offset[0], offset[0] + logo_size):
+                img.putpixel((x, y), (255, 255, 255))
+
         logo = Image.open(logo_file)
-        logo = logo.resize((50, 50))  # Adjust size to fit inside QR code
-        img_w, img_h = img.size
-        logo_w, logo_h = logo.size
-        offset = ((img_w - logo_w) // 2, (img_h - logo_h) // 2)
+        logo = logo.resize((logo_size, logo_size))  # Adjust size to fit inside QR code
         img.paste(logo, offset)
 
     # Save the image to a BytesIO object
