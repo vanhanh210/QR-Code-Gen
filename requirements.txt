@@ -4,3 +4,4 @@ qrcode[pil]
 pyshorteners
 base64
 Image
+PilImage
