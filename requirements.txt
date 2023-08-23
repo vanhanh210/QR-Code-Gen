@@ -7,3 +7,4 @@ Image
 PilImage
 ImageDraw
 python
+pip-23.2.1
