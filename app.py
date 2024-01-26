@@ -56,13 +56,13 @@ if url:
         qr_size = img.size[0]
         logo_position = ((qr_size - logo_size) // 2, (qr_size - logo_size) // 2)
 
-        # Create a white box in the center of QR code where the logo will be placed
+        # Create a white box in the center of the QR code where the logo will be placed
         for x in range(logo_position[0], logo_position[0] + logo_size):
             for y in range(logo_position[1], logo_position[1] + logo_size):
                 img.putpixel((x, y), (255, 255, 255))
 
         # Paste the logo
-        img.paste(logo, logo_position, mask=logo)
+        img.paste(logo, logo_position, logo)
 
     # Save the image to a BytesIO object
     buffer = io.BytesIO()
@@ -87,4 +87,3 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
