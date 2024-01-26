@@ -52,17 +52,17 @@ if url:
     if uploaded_logo:
         logo = Image.open(uploaded_logo).convert('RGBA')
         logo_size = 80
-        logo = logo.resize((logo_size, logo_size), Image.ANTIALIAS)
+        logo_resized = logo.resize((logo_size, logo_size), Image.ANTIALIAS)
         qr_size = img.size[0]
         logo_position = ((qr_size - logo_size) // 2, (qr_size - logo_size) // 2)
 
-        # Create a white box in the center of the QR code where the logo will be placed
+        # Create a white box in the center of QR code where the logo will be placed
         for x in range(logo_position[0], logo_position[0] + logo_size):
             for y in range(logo_position[1], logo_position[1] + logo_size):
                 img.putpixel((x, y), (255, 255, 255))
 
-        # Paste the logo
-        img.paste(logo, logo_position, logo)
+        # Paste the resized logo
+        img.paste(logo_resized, logo_position, logo_resized)
 
     # Save the image to a BytesIO object
     buffer = io.BytesIO()
